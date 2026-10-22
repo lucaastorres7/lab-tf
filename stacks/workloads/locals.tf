@@ -33,5 +33,28 @@ locals {
       memory    = 3072 # 3GiB
       disk_size = 40
     }
+
+    vmk8sworker01 = {
+      ip        = "192.168.1.221/24"
+      cores     = 2
+      memory    = 4096 # 4GiB
+      disk_size = 40
+    }
+
+    vmk8sworker02 = {
+      ip        = "192.168.1.222/24"
+      cores     = 2
+      memory    = 4096 # 4GiB
+      disk_size = 40
+    }
+  }
+
+  containers = {
+    "pihole-dns" = {
+      ip        = "192.168.1.201/24"
+      cores     = 1
+      memory    = 512
+      disk_size = 4
+    }
   }
 }

@@ -2,38 +2,45 @@ module "virtual_machines" {
   source   = "../../modules/vm"
   for_each = local.vms
 
-  name = each.key
+  name    = each.key
+  ip      = each.value.ip
+  gateway = local.network_gateway
+  image   = local.images.ubuntu_26_vm
+  node    = local.node
 
-  cores       = each.value.cores
+  username = local.username
+  ssh_keys = [trimspace(data.local_file.public_key.content)]
+
+  cores     = each.value.cores
+  memory    = each.value.memory
+  disk_size = each.value.disk_size
+
   datastore   = local.datastores.vm_disks
-  disk_size   = each.value.disk_size
-  gateway     = local.network_gateway
-  image       = local.images.ubuntu_26_vm
-  ip          = each.value.ip
-  memory      = each.value.memory
-  node        = local.node
   snippets_ds = local.datastores.snippets
-  ssh_keys    = [trimspace(data.local_file.public_key.content)]
-  username    = local.username
+}
+
+moved {
+  from = module.containers
+  to   = module.containers["pihole-dns"]
 }
 
 module "containers" {
-  source = "../../modules/lxc"
+  source   = "../../modules/lxc"
+  for_each = local.containers
 
-  name    = "pihole-dns"
-  image   = local.images.ubuntu_26_container
-  node    = local.node
-  os_type = "ubuntu"
-
-  ip      = "192.168.1.201/24"
+  name    = each.key
+  ip      = each.value.ip
   gateway = local.network_gateway
-
+  image   = local.images.ubuntu_26_container
+  os_type = "ubuntu"
+  node    = local.node
 
   ssh_keys = [trimspace(data.local_file.public_key.content)]
   password = var.ssh_password
 
+  cores     = each.value.cores
+  memory    = each.value.memory
+  disk_size = each.value.disk_size
+
   datastore = local.datastores.vm_disks
-  cores     = 1
-  disk_size = 4
-  memory    = 512
 }
