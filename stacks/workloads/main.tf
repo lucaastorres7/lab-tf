@@ -19,11 +19,6 @@ module "virtual_machines" {
   snippets_ds = local.datastores.snippets
 }
 
-moved {
-  from = module.containers
-  to   = module.containers["pihole-dns"]
-}
-
 module "containers" {
   source   = "../../modules/lxc"
   for_each = local.containers
