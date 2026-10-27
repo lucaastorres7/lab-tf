@@ -28,7 +28,7 @@ locals {
 
   vms = {
     vmk8smaster01 = {
-      ip        = "192.168.1.210/24"
+      ip        = "192.168.1.211/24"
       cores     = 2
       memory    = 3072 # 3GiB
       disk_size = 40
